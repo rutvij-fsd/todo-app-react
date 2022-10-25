@@ -1,8 +1,11 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 const Todo = () => {
   const [input, setInput] = useState("");
-  const [todoArr, setTodoArr] = useState([]);
+  const [todoArr, setTodoArr] = useState(() => {
+    const todoFromLC = JSON.parse(localStorage.getItem("todo"));
+    return todoFromLC && todoFromLC.length > 0 ? todoFromLC : [];
+  });
   const [isEditing, setIsEditing] = useState({
     edit: false,
     todoId: "",
@@ -31,19 +34,20 @@ const Todo = () => {
     setInput(text);
   };
   const onTodoUpdateHandler = () => {
-    const todoIndex = todoArr.findIndex(
-      (elem) => elem.id === isEditing.todoId
-    );
+    const todoIndex = todoArr.findIndex((elem) => elem.id === isEditing.todoId);
     const clonedArr = [...todoArr];
     clonedArr[todoIndex] = {
       id: uuidv4().split("-")[0],
-      text: input
+      text: input,
     };
     setTodoArr(clonedArr);
     setInput("");
-    setIsEditing({ ...isEditing, edit: false, todoId: '' });
-
+    setIsEditing({ ...isEditing, edit: false, todoId: "" });
   };
+
+  useEffect(() => {
+    localStorage.setItem("todo", JSON.stringify(todoArr));
+  }, [todoArr]);
 
   return (
     <div className="container text-center">
