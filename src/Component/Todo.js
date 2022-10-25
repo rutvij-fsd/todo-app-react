@@ -7,16 +7,21 @@ const Todo = () => {
   const onTodoAddHandler = () => {
     if (!input) return;
     setTodoArr([
-      ...todoArr,
       {
         id: uuidv4().split("-")[0],
-        text: input
-      }
+        text: input,
+      },
+      ...todoArr,
     ]);
-    
+
     setInput("");
   };
-  
+
+  const onHandleDelete = (id) => {
+    const updatedArr = todoArr.filter((todo) => todo.id !== id);
+    setTodoArr(updatedArr);
+  };
+
   return (
     <div className="container text-center">
       <h1 className="m-5">Todo App</h1>
@@ -40,7 +45,12 @@ const Todo = () => {
           <ul style={{ listStyle: "none" }} className="row mt-3">
             <li className="col-6 text-center fs-4 ms-5">{todo.text}</li>
             <button className="col-auto btn btn-secondary me-2">Edit</button>
-            <button className="col-auto btn btn-danger h-75">Delete</button>
+            <button
+              className="col-auto btn btn-danger h-75"
+              onClick={() => onHandleDelete(todo.id)}
+            >
+              Delete
+            </button>
           </ul>
         ))}
       </div>
