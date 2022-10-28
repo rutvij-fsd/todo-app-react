@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
+import TodoItemDetail from "./TodoItemDetail";
 const Todo = () => {
   const [input, setInput] = useState("");
   const [todoArr, setTodoArr] = useState(() => {
@@ -10,7 +11,7 @@ const Todo = () => {
     edit: false,
     todoId: "",
   });
-  const [filter,setfilter] = useState('All');
+  const [filter, setfilter] = useState("All");
 
   const onTodoAddHandler = () => {
     if (!input) return;
@@ -60,6 +61,40 @@ const Todo = () => {
     localStorage.setItem("todo", JSON.stringify(todoArr));
   }, [todoArr]);
 
+  const getAllTodos = () =>{
+    return todoArr.map((todo, index) => (
+      <TodoItemDetail 
+      key={index}
+      todo={todo} 
+      onCompleteHandler={onCompleteHandler} 
+      onEditHandler={onEditHandler}
+      onHandleDelete={onHandleDelete}
+      />
+    ))
+  }
+  const getCompletedTodos = () =>{
+    return todoArr.map((todo, index) => 
+      todo.isCompleted && (<TodoItemDetail 
+      key={index}
+      todo={todo} 
+      onCompleteHandler={onCompleteHandler} 
+      onEditHandler={onEditHandler}
+      onHandleDelete={onHandleDelete}
+      />)
+    )
+  }
+  const getPendingTodos = () =>{
+    return todoArr.map((todo, index) => 
+      !todo.isCompleted && (<TodoItemDetail 
+      key={index}
+      todo={todo} 
+      onCompleteHandler={onCompleteHandler} 
+      onEditHandler={onEditHandler}
+      onHandleDelete={onHandleDelete}
+      />)
+    )
+  }
+
   return (
     <div className="container text-center">
       <h1 className="m-5">Todo App</h1>
@@ -88,44 +123,30 @@ const Todo = () => {
         )}
       </div>
       <div className="d-flex justify-content-center mt-3">
-        <button className={`${filter === 'All'? 'btn-info' : ''} btn mx-2 px-4`} onClick={()=> setfilter('All')} >All</button>
-        <button className={`${filter === 'Completed'? 'btn-info' : ''} btn mx-2 px-4`} onClick={()=> setfilter('Completed')}>Completed</button>
-        <button className={`${filter === 'Pending'? 'btn-info' : ''} btn mx-2 px-4`} onClick={()=> setfilter('Pending')}>Pending</button>
+        <button
+          className={`${filter === "All" ? "btn-info" : ""} btn mx-2 px-4`}
+          onClick={() => setfilter("All")}
+        >
+          All
+        </button>
+        <button
+          className={`${
+            filter === "Completed" ? "btn-info" : ""
+          } btn mx-2 px-4`}
+          onClick={() => setfilter("Completed")}
+        >
+          Completed
+        </button>
+        <button
+          className={`${filter === "Pending" ? "btn-info" : ""} btn mx-2 px-4`}
+          onClick={() => setfilter("Pending")}
+        >
+          Pending
+        </button>
       </div>
-      <div className="container">
-        {todoArr.map((todo, index) => (
-          <ul
-            style={{ listStyle: "none" }}
-            className="row mt-3 justify-content-center mx-5"
-          >
-            <span
-              className="col-auto"
-              onClick={() => onCompleteHandler(todo.id)}
-            >
-              {!todo.isCompleted ? (
-                <i className="fa-solid fa-stopwatch fa-2x center"></i>
-              ) : (
-                <i className="fa-solid fa-circle-check fa-2x center"></i>
-              )}
-            </span>
-            <li className="col-5 text-center fs-4 align-items-center">
-              {todo.text}
-            </li>
-            <button
-              className="col-auto btn btn-secondary h-auto me-2"
-              onClick={() => onEditHandler(todo.text, todo.id)}
-            >
-              Edit
-            </button>
-            <button
-              className="col-auto btn btn-danger h-auto"
-              onClick={() => onHandleDelete(todo.id)}
-            >
-              Delete
-            </button>
-          </ul>
-        ))}
-      </div>
+      <div className="container">{filter === 'All' && getAllTodos()}</div>
+      <div className="container">{filter === 'Completed' && getCompletedTodos()}</div>
+      <div className="container">{filter === 'Pending' && getPendingTodos()}</div>
     </div>
   );
 };
