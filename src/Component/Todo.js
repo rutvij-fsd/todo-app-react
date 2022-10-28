@@ -10,6 +10,7 @@ const Todo = () => {
     edit: false,
     todoId: "",
   });
+  const [filter,setfilter] = useState('All');
 
   const onTodoAddHandler = () => {
     if (!input) return;
@@ -86,6 +87,11 @@ const Todo = () => {
           </button>
         )}
       </div>
+      <div className="d-flex justify-content-center mt-3">
+        <button className={`${filter === 'All'? 'btn-info' : ''} btn mx-2 px-4`} onClick={()=> setfilter('All')} >All</button>
+        <button className={`${filter === 'Completed'? 'btn-info' : ''} btn mx-2 px-4`} onClick={()=> setfilter('Completed')}>Completed</button>
+        <button className={`${filter === 'Pending'? 'btn-info' : ''} btn mx-2 px-4`} onClick={()=> setfilter('Pending')}>Pending</button>
+      </div>
       <div className="container">
         {todoArr.map((todo, index) => (
           <ul
@@ -102,7 +108,7 @@ const Todo = () => {
                 <i className="fa-solid fa-circle-check fa-2x center"></i>
               )}
             </span>
-            <li className="col-3 text-center fs-4 align-items-center">
+            <li className="col-5 text-center fs-4 align-items-center">
               {todo.text}
             </li>
             <button
